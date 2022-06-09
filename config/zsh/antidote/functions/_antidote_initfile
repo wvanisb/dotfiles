@@ -1,0 +1,27 @@
+#!/usr/bin/env zsh
+
+### Get the path to a plugin's init file.
+
+setopt local_options extended_glob
+REPLY=
+local bundle=$1
+local bundledir
+if [[ -d "$bundle" ]]; then
+  bundledir=$bundle
+else
+  bundledir=$(_antidote_bundledir $bundle)
+fi
+local bundlename=${bundle:t}
+local initfiles=(
+  $bundledir/$bundlename.plugin.zsh(N)
+  $bundledir/$bundlename.zsh(N)
+  $bundledir/init.zsh(N)
+  $bundledir/*.plugin.{z,}sh(N)
+  $bundledir/*.{z,}sh{-theme,}(N)
+)
+if [[ ${#initfiles[@]} -eq 0 ]]; then
+  echo >&2 "antidote: no init file found '$bundle' $bundlename."
+  return 1
+fi
+REPLY=$initfiles[1]
+echo $REPLY

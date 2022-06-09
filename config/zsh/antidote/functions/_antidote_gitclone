@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+
+### Mockable wrapper for `git clone` to aid unit testing.
+
+command git clone "$@"

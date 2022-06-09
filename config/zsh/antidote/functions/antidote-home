@@ -1,0 +1,26 @@
+#!/usr/bin/env zsh
+
+##? usage: antidote home
+##?
+##? Prints where antibody is cloning the bundles
+##?
+##? Flags:
+##?   -h, --help           Show context-sensitive help
+##?   -v, --version        Show application version
+
+# Can be overridden by setting `$ANTIDOTE_HOME`.
+
+local rootdir
+if [[ -n "$ANTIDOTE_HOME" ]]; then
+  REPLY=$ANTIDOTE_HOME
+elif [[ "${OSTYPE}" == darwin* ]]; then
+  REPLY="$HOME/Library/Caches/antidote"
+elif [[ "${OSTYPE}" == (cygwin|msys)* ]]; then
+  REPLY="$LOCALAPPDATA/antidote"
+elif [[ -n "$XDG_CACHE_HOME" ]]; then
+  REPLY="$XDG_CACHE_HOME/antidote"
+else
+  REPLY="$HOME/.cache/antidote"
+fi
+[[ -d $REPLY ]] || mkdir -p $REPLY
+echo $REPLY

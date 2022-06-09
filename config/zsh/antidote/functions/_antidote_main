@@ -1,0 +1,33 @@
+#!/usr/bin/env zsh
+
+### The main antidote controller function.
+
+# _antidote_main allows `antidote` and `antidote-init` to co-exist, which is why this
+# code isn't in the core `antidote` function. `antidote-init` will change what that
+# function does.
+
+0=${(%):-%x}
+local ver='1.1.0'
+
+if ! (( $+functions[antidote-help] )); then
+  for _fn in ${0:A:h}/*; do
+    (( $+functions[${_fn:t}] )) || autoload -Uz $_fn
+  done
+  unset _fn
+fi
+
+local cmd="$1"
+shift
+
+if (( $+functions[antidote-${cmd}] )); then
+  antidote-${cmd} "$@"
+  return $?
+elif [[ -z "$cmd" ]] || [[ $cmd = (--help|-h) ]]; then
+  antidote-help "$@"
+elif [[ $cmd = (--version|-v) ]]; then
+  local gitsha=$(git -C "${0:h:h}" rev-parse --short HEAD 2>/dev/null)
+  [[ -z "$gitsha" ]] || ver="$ver ($gitsha)"
+  echo "antidote version $ver"
+else
+  echo >&2 "antidote: command not found '${cmd}'" && return 1
+fi

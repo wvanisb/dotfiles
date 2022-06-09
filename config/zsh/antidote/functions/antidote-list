@@ -1,0 +1,23 @@
+#!/usr/bin/env zsh
+
+##? usage: antidote list
+##?
+##? Lists all currently installed bundles
+##?
+##? Flags:
+##?   -h, --help           Show context-sensitive help
+##?   -v, --version        Show application version
+
+setopt local_options extended_glob
+
+if [[ $# -ne 0 ]]; then
+  echo >&2 "antidote: error: unexpected $1, try --help"
+  return 1
+fi
+
+local d
+local bundle
+for d in $(antidote-home)/**/.git/..(N); do
+  local url=$(git -C "${d:A}" config remote.origin.url)
+  printf '%-64s %s\n' $url ${d:A}
+done

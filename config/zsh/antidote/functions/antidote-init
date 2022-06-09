@@ -1,0 +1,27 @@
+#!/usr/bin/env zsh
+
+##? usage: antidote init
+##?
+##? Initializes the shell so antidote can behave like legacy antibody/antigen
+##?
+##? Flags:
+##?   -h, --help           Show context-sensitive help
+##?   -v, --version        Show application version
+
+# This function changes how the `antidote` command works by sourcing the results of
+# `antidote bundle` instead of just generating the Zsh script.
+
+local script=(
+  '#!/usr/bin/env zsh'
+  'function antidote {'
+  '  case "$1" in'
+  '    bundle)'
+  '      source <( _antidote_main $@ ) || _antidote_main $@'
+  '      ;;'
+  '    *)'
+  '      _antidote_main $@'
+  '      ;;'
+  '  esac'
+  '}'
+)
+printf "%s\n" "${script[@]}"

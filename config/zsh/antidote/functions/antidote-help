@@ -1,0 +1,29 @@
+#!/usr/bin/env zsh
+
+##? usage: antidote help [<command>...]
+##?
+##? Show help
+##?
+##? Flags:
+##?   -h, --help           Show context-sensitive help
+##?   -v, --version        Show application version
+##?
+##? Args:
+##?   [<command>]  Show help on command
+
+0=${(%):-%x}
+
+local fn_dir="${0:a:h}"
+local fn_file
+
+if [[ -z "$1" ]]; then
+  fn_file="${fn_dir}/antidote"
+else
+  fn_file="${fn_dir}/antidote-${1}"
+fi
+if [[ ! -f "$fn_file" ]]; then
+  echo >&2 "antidote: error: expected valid command but got '$@'."
+  return 1
+fi
+
+command grep "^##?" "${fn_file}" | cut -c 5-

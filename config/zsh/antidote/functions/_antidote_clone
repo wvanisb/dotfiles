@@ -1,0 +1,13 @@
+#!/usr/bin/env zsh
+
+### Clone a git repo containing a Zsh plugin.
+
+local bundle=$1
+local branch=$2
+local giturl=$(_antidote_tourl $bundle)
+local bundledir=$(_antidote_bundledir $giturl)
+
+if [[ ! -d $bundledir ]]; then
+  [[ -z "$branch" ]] || branch="--branch=$branch"
+  _antidote_gitclone --quiet --depth 1 --recurse-submodules --shallow-submodules $branch $giturl $bundledir
+fi
